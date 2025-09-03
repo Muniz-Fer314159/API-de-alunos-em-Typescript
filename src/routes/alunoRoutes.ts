@@ -1,8 +1,11 @@
 import {Router} from "express";
 import {AlunoController} from "../controllers/alunoController";
+import { authMiddleware } from "../middleware/auth";
 
 const alunoRouter = Router();
 const aluno = new AlunoController();
+
+alunoRouter.use (authMiddleware);
 
 /**
  * @swagger
@@ -107,4 +110,28 @@ alunoRouter.post("/", (req, res) => aluno.create(req, res));
 
 alunoRouter.put("/:ra", (req, res) => aluno.update(req, res));
 alunoRouter.delete("/:ra", (req, res) => aluno.delete(req, res));
+
+/**@swagger
+ * /aluno/{ra}:
+ *  delete:
+ *    summary: Deleta um aluno existente
+ *    tags: [Alunos]
+ *    parameters:
+ *      - in: path
+ *        name: ra
+ *        required: true
+ *        description: Registro Acadêmico do aluno
+ *        schema:
+ *          type: string
+ *    responses:
+ *      204:
+ *        description: Aluno deletado com sucesso
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/Aluno'
+ *      404:
+ *        description: Aluno não encontrado
+ */
+
 export default alunoRouter;
