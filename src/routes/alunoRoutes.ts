@@ -36,6 +36,8 @@ alunoRouter.use (authMiddleware);
  *  get:
  *    summary: Lista de todos os alunos
  *    tags: [Alunos]
+ *    security:
+ *      - bearerAuth: []
  *    responses:
  *      200:
  *        description: Lista de alunos
@@ -54,6 +56,8 @@ alunoRouter.get("/", (req, res) => aluno.get(req, res));
  *  post:
  *    summary: Cria um novo aluno
  *    tags: [Alunos]
+ *    security:
+ *      - bearerAuth: []
  *    requestBody:
  *      required: true
  *      content:
@@ -76,6 +80,8 @@ alunoRouter.post("/", (req, res) => aluno.create(req, res));
  *  put:
  *    summary: Atualiza um aluno existente
  *    tags: [Alunos]
+ *    security:
+ *      - bearerAuth: []
  *    parameters:
  *      - in: path
  *        name: ra
@@ -116,6 +122,8 @@ alunoRouter.delete("/:ra", (req, res) => aluno.delete(req, res));
  *  delete:
  *    summary: Deleta um aluno existente
  *    tags: [Alunos]
+ *    security:
+ *      - bearerAuth: []
  *    parameters:
  *      - in: path
  *        name: ra
