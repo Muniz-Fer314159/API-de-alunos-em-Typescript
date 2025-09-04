@@ -52,7 +52,7 @@ const authController = new AuthController();
  *         description: Acesso negado
  */
 
-router.post("/auth/login", (req, res) => authController.login(req, res));
+router.post("/login", (req, res) => authController.login(req, res));
 
 /**
  * @swagger
@@ -60,6 +60,8 @@ router.post("/auth/login", (req, res) => authController.login(req, res));
  *   post:
  *     summary: Cadastro de login na API de alunos
  *     tags: [Auth]
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -86,5 +88,5 @@ router.post("/auth/login", (req, res) => authController.login(req, res));
  *         description: Dados inválidos
  */
 
-router.post("/auth/register", (req, res) => authController.register(req, res));
+router.post("/register", (req, res) => authController.register(req, res));
 export default router;
