@@ -2,7 +2,7 @@ import express from "express";
 import swaggerUi from "swagger-ui-express";
 import { swaggerSpec } from "./config/swagger";
 import alunoRouter from "./routes/alunoRoutes";
-import authRouter from "./routes/authRoutes"; // importa o router que você criou
+import authRouter from "./routes/authRoutes";
 
 const app = express();
 app.use(express.json());

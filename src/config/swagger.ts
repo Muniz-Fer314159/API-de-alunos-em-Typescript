@@ -1,7 +1,6 @@
 import { describe } from "node:test";
 import swaggerJSDoc from "swagger-jsdoc";
 
-// Configuração do Swagger
 const options ={
     definition: {
         openapi: "3.0.0",
