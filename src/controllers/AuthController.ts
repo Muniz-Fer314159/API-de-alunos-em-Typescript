@@ -1,67 +1,46 @@
-import { Request, Response } from "express";
-import jwt from "jsonwebtoken";
-import bcrypt from "bcryptjs";
-import dotenv from "dotenv";
-
-dotenv.config();
-
-const JWT_SECRET = process.env.JWT_SECRET || "PenaltiFoiPix";
-
-interface LoginUser {
-  id: number;
-  email: string;
-  password: string;
-  nome: string;
-}
+import { Request, Response } from 'express';
+import { AuthService } from '../services/UsuarioService';
 
 export class AuthController {
-  private users: LoginUser[] = [];
+    private authService: AuthService;
 
-  async login(req: Request, res: Response): Promise<Response> {
-    const { email, password } = req.body;
-
-    const user = this.users.find((u) => u.email === email);
-    if (!user) {
-      return res.status(400).json({ message: "Credenciais inválidas" });
+    constructor() {
+        this.authService = new AuthService();
     }
 
-    const isValidPassword = await bcrypt.compare(password, user.password);
-    if (!isValidPassword) {
-      return res.status(401).json({ message: "Acesso negado" });
+    async register(req: Request, res: Response): Promise<Response> {
+        try {
+            const { nome, email, password } = req.body;
+            
+            if (!nome || !email || !password) {
+                return res.status(400).json({ message: 'Todos os campos são obrigatórios' });
+            }
+
+            const result = await this.authService.register({ nome, email, senha: password });
+            return res.status(201).json(result);
+        } catch (error: any) {
+            if (error.message === 'Email já cadastrado') {
+                return res.status(400).json({ message: error.message });
+            }
+            return res.status(500).json({ error: 'Erro interno do servidor' });
+        }
     }
 
-    const token = jwt.sign({ userId: user.id }, JWT_SECRET, {
-      expiresIn: "24h",
-    });
+    async login(req: Request, res: Response): Promise<Response> {
+        try {
+            const { email, password } = req.body;
+            
+            if (!email || !password) {
+                return res.status(400).json({ message: 'Email e senha são obrigatórios' });
+            }
 
-    return res.json({ token });
-  }
-
-  async register(req: Request, res: Response): Promise<Response> {
-    const { email, password, nome } = req.body;
-
-    if (!email || !password || !nome) {
-      return res
-        .status(400)
-        .json({ message: "Todos os campos são obrigatórios" });
+            const result = await this.authService.login(email, password);
+            return res.json(result);
+        } catch (error: any) {
+            if (error.message === 'Credenciais inválidas' || error.message === 'Acesso não autorizado') {
+                return res.status(401).json({ message: error.message });
+            }
+            return res.status(500).json({ error: 'Erro interno do servidor' });
+        }
     }
-
-    const isEmailValid = this.users.find((u) => u.email === email);
-    if (isEmailValid) {
-      return res.status(400).json({ message: "E-mail já cadastrado" });
-    }
-
-    const hashedPassword = await bcrypt.hash(password, 8);
-
-    const newUser: LoginUser = {
-      id: this.users.length + 1,
-      nome,
-      email,
-      password: hashedPassword,
-    };
-
-    this.users.push(newUser);
-
-    return res.status(201).json({ message: "Usuário cadastrado com sucesso" });
-  }
 }

@@ -17,5 +17,5 @@ export class AlunoRepository {
         return await Aluno.destroy ({ where: {id}})
     }
 
-    //criar o método update e o método delete
+    //criar o método update
 }
